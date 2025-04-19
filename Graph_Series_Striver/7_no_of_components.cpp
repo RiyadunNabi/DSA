@@ -73,3 +73,31 @@ int main()
     }
     return 0;
 }
+
+
+// class Solution {
+// private:
+//     void dfs(vector<vector<int>>& M, vector<bool>& visited, int i) {
+//         visited[i] = true;
+//         for (int j = 0; j < M.size(); ++j) {
+//             if (M[i][j] == 1 && !visited[j]) {
+//                 dfs(M, visited, j);
+//             }
+//         }
+//     }
+
+// public:
+//     int findCircleNum(vector<vector<int>>& M) {
+//         int n = M.size();
+//         vector<bool> visited(n, false);
+//         int cnt = 0;
+//         for (int i = 0; i < n; ++i) {
+//             if (!visited[i]) {
+//                 ++cnt;
+//                 dfs(M, visited, i);
+//             }
+//         }
+//         return cnt;
+//     }
+// };
+
