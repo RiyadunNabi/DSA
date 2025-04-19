@@ -5,47 +5,36 @@ using namespace std;
 // } Driver Code Ends
 // User function Template for C++
 
-class Solution
-{
+class Solution {
 private:
-    void dfs(vector<vector<int>> &adjL, vector<bool> &visited, int node)
-    {
+    void dfs(vector<vector<int>>& adjL, vector<bool> &visited, int node) {
         visited[node] = true;
-        for (int i : adjL[node])
-        {
-            if (!visited[i])
-            {
+        for (int i : adjL[node]) {
+            if (!visited[i]) {
                 dfs(adjL, visited, i);
             }
         }
     }
 
 public:
-    int findCircleNum(vector<vector<int>> &isConnected)
-    {
+    int findCircleNum(vector<vector<int>>& isConnected) {
         int n = isConnected.size();
-        vector<vector<int>> adjL(n + 1);
-        vector<vector<int>> adj(isConnected);
-        for (int i = 0; i < n; i++)
-        {
-            for (int j = i + 1; j < n; j++)
-            {
-                if (adj[i][j] == 1)
-                {
-                    adjL[i + 1].push_back(j + 1);
-                    adjL[j + 1].push_back(i + 1);
+        vector<vector<int>> adjL(n);
+        
+        for (int i = 0; i < n; ++i) {
+            for (int j = i+1; j < n; ++j) {
+                if (isConnected[i][j] == 1) {
+                    adjL[i].push_back(j);
+                    adjL[j].push_back(i);
                 }
             }
         }
 
-        vector<bool> visited(n + 1, false);
+        vector<bool> visited(n, false);
         int cnt = 0;
-        for (int i = 1; i <= n; i++)
-        {
-            if (!visited[i])
-            {
-                cnt++;
-                // visited[i]=true;
+        for (int i = 0; i < n; ++i) {
+            if (!visited[i]) {
+                ++cnt;
                 dfs(adjL, visited, i);
             }
         }
