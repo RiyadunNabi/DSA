@@ -36,7 +36,7 @@ class SolutionBFS{
     }
 }
 
-class SolutionDFS1{
+class SolutionDFS{
     private:
     void dfs(vector<vector<int>> &adj, vector<bool> &visited, vector<int> &dfsList, int node){
         visited[node]=true;
@@ -67,7 +67,6 @@ class SolutionDFS1{
 
 
 int main() {
-    Solution sol;
 
     int n = 6;  // Number of nodes
     vector<vector<int>> adj(n + 1);
@@ -83,7 +82,8 @@ int main() {
     adj[6].push_back(5);
 
     // BFS Traversal
-    vector<int> bfsResult = sol.bfsDisconnected(n, adj);
+    SolutionBFS solbfs;
+    vector<int> bfsResult = solbfs.bfsDisconnected(n, adj);
     cout << "BFS Traversal: ";
     for (int node : bfsResult) {
         cout << node << " ";
@@ -91,7 +91,8 @@ int main() {
     cout << endl;
 
     // DFS Traversal
-    vector<int> dfsResult = sol.dfsDisconnected(n, adj);
+    SolutionDFS soldfs;
+    vector<int> dfsResult = soldfs.dfsDisconnected(n, adj);
     cout << "DFS Traversal: ";
     for (int node : dfsResult) {
         cout << node << " ";
