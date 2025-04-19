@@ -13,10 +13,16 @@ void ListFromMatrix(int n,vector<vector<int>> &adjM){
     }
 
     //or this one, will traverse only upper triangular matrix
-    for (int i = 0; i < n; i++) {
-        for (int j = i+1; j < n; j++) {
-            // Access matrix[i][j]
-        }
+    vector<vector<int>> adjL(n+1);
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = i+1; j<n; j++)
+        {
+            if(adj[i][j]==1){
+                adjL[i+1].push_back(j+1);
+                adjL[j+1].push_back(i+1);
+            }
+        }  
     }
 
 
