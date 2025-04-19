@@ -13,7 +13,7 @@ class Solution {
         for (int i : adjL[node])
         {
             if(!visited[i]){
-                visited[i]=true;
+                //visited[i]=true;
                 dfs(adjL, visited, i);
             }
         }
