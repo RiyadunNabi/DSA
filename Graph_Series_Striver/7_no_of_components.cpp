@@ -7,11 +7,11 @@ using namespace std;
 
 class Solution {
 private:
-    void dfs(vector<vector<int>>& adjL, vector<bool> &visited, int node) {
+    void dfs(vector<vector<int>>& isConnected, vector<bool> &visited, int node) {
         visited[node] = true;
-        for (int i : adjL[node]) {
-            if (!visited[i]) {
-                dfs(adjL, visited, i);
+        for (int i = 0; i < isConnected.size(); ++i) {
+            if (isConnected[node][i] == 1 && !visited[i]) {
+                dfs(isConnected, visited, i);
             }
         }
     }
@@ -19,23 +19,12 @@ private:
 public:
     int findCircleNum(vector<vector<int>>& isConnected) {
         int n = isConnected.size();
-        vector<vector<int>> adjL(n);
-        
-        for (int i = 0; i < n; ++i) {
-            for (int j = i+1; j < n; ++j) {
-                if (isConnected[i][j] == 1) {
-                    adjL[i].push_back(j);
-                    adjL[j].push_back(i);
-                }
-            }
-        }
-
         vector<bool> visited(n, false);
         int cnt = 0;
         for (int i = 0; i < n; ++i) {
             if (!visited[i]) {
                 ++cnt;
-                dfs(adjL, visited, i);
+                dfs(isConnected, visited, i);
             }
         }
         return cnt;
@@ -75,29 +64,45 @@ int main()
 }
 
 
-// class Solution {
-// private:
-//     void dfs(vector<vector<int>>& M, vector<bool>& visited, int i) {
-//         visited[i] = true;
-//         for (int j = 0; j < M.size(); ++j) {
-//             if (M[i][j] == 1 && !visited[j]) {
-//                 dfs(M, visited, j);
-//             }
-//         }
-//     }
+/*
 
-// public:
-//     int findCircleNum(vector<vector<int>>& M) {
-//         int n = M.size();
-//         vector<bool> visited(n, false);
-//         int cnt = 0;
-//         for (int i = 0; i < n; ++i) {
-//             if (!visited[i]) {
-//                 ++cnt;
-//                 dfs(M, visited, i);
-//             }
-//         }
-//         return cnt;
-//     }
-// };
+
+class Solution {
+    private:
+        void dfs(vector<vector<int>>& adjL, vector<bool> &visited, int node) {
+            visited[node] = true;
+            for (int i : adjL[node]) {
+                if (!visited[i]) {
+                    dfs(adjL, visited, i);
+                }
+            }
+        }
+    
+    public:
+        int findCircleNum(vector<vector<int>>& isConnected) {
+            int n = isConnected.size();
+            vector<vector<int>> adjL(n);
+            
+            for (int i = 0; i < n; ++i) {
+                for (int j = i+1; j < n; ++j) {
+                    if (isConnected[i][j] == 1) {
+                        adjL[i].push_back(j);
+                        adjL[j].push_back(i);
+                    }
+                }
+            }
+    
+            vector<bool> visited(n, false);
+            int cnt = 0;
+            for (int i = 0; i < n; ++i) {
+                if (!visited[i]) {
+                    dfs(adjL, visited, i);
+                    ++cnt;
+                }
+            }
+            return cnt;
+        }
+}; 
+
+*/
 
