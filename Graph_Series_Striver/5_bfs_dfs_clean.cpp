@@ -1,6 +1,37 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+
+class SolutionBFSinOneFunc {
+public:
+    vector<int> bfsDisconnected(int n, vector<vector<int>> adj) {
+        vector<bool> visited(n + 1, false); 
+        vector<int> bfsList;
+
+        for (int i = 1; i <= n; i++) {
+            if (!visited[i]) {
+                visited[i] = true;
+                queue<int> q;
+                q.push(i);
+
+                while (!q.empty()) {
+                    int u = q.front();
+                    q.pop();
+                    bfsList.push_back(u);
+
+                    for (int v : adj[u]) {
+                        if (!visited[v]) {
+                            visited[v] = true;
+                            q.push(v);
+                        }
+                    }
+                }
+            }
+        }
+        return bfsList;
+    }
+};
+
 class SolutionBFS{
     private:
     void bfs(vector<vector<int>> &adj, vector<bool> &visited, vector<int> &bfsList, int node){  //there are two times if(!visited[]) visited[]=true; it is prefferable
