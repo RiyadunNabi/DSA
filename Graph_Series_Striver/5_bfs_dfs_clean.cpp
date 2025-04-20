@@ -9,11 +9,11 @@ class SolutionBFS{
         q.push(node);
 
         while (!q.empty()) {
-            int node = q.front();
+            int u = q.front();
             q.pop();
-            bfsList.push_back(node);
+            bfsList.push_back(u);
 
-            for (int v : adj[node]) {
+            for (int v : adj[u]) {
                 if (!visited[v]) {
                     visited[v] = true;
                     q.push(v);
