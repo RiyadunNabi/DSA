@@ -4,11 +4,11 @@ using namespace std;
 
 class SolutionBFSinOneFunc {
 public:
-    vector<int> bfsDisconnected(int n, vector<vector<int>> adj) {
-        vector<bool> visited(n + 1, false); 
+    vector<int> bfsDisconnected(int n, vector<vector<int>> adjL) {
+        vector<bool> visited(n, false); 
         vector<int> bfsList;
 
-        for (int i = 1; i <= n; i++) {
+        for (int i = 0; i < n; i++) {
             if (!visited[i]) {
                 visited[i] = true;
                 queue<int> q;
@@ -19,8 +19,8 @@ public:
                     q.pop();
                     bfsList.push_back(u);
 
-                    for (int v : adj[u]) {
-                        if (!visited[v]) {
+                    for (int v : adjL[u]) {   //for(int v=0; v<M.size(); v++){
+                        if (!visited[v]) {    //    if(M[u][v]==1 && !visited[v])
                             visited[v] = true;
                             q.push(v);
                         }
