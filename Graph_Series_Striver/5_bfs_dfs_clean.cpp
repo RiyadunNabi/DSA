@@ -69,11 +69,11 @@ class SolutionBFS{
 
 class SolutionDFS{
     private:
-    void dfs(vector<vector<int>> &adj, vector<bool> &visited, vector<int> &dfsList, int node){
-        visited[node]=true;
-        dfsList.push_back(node);
+    void dfs(vector<vector<int>> &adj, vector<bool> &visited, vector<int> &dfsList, int u){
+        visited[u]=true;
+        dfsList.push_back(u);
 
-        for(int v : adj[node]){
+        for(int v : adj[u]){
             if(!visited[v]){
                 dfs(adj, visited, dfsList, v);
             }
@@ -82,10 +82,10 @@ class SolutionDFS{
 
     public:
     vector<int> dfsDisconnected(int n, vector<vector<int>> adj){
-        vector<bool> visited(n+1, false);
+        vector<bool> visited(n, false);
         vector<int> dfsList;
 
-        for(int i=1; i<=n; i++){
+        for(int i=0; i<n; i++){
             if(!visited[i]){
                 dfs(adj, visited, dfsList, i);
             }
