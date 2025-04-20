@@ -66,7 +66,7 @@ int main()
 
 /*
 
-
+changing Matrix to Adj List
 class Solution {
     private:
         void dfs(vector<vector<int>>& adjL, vector<bool> &visited, int node) {
@@ -103,6 +103,40 @@ class Solution {
             return cnt;
         }
 }; 
+
+*/
+
+/***********************************************************using bfs**********************************************/
+/*
+class Solution{
+    public:
+    int findCircleNum(vector<vector<int>> &isConnected){
+        vector<bool> visited(isConnected.size(), false);
+        int count=0;
+        for (int i = 0; i < isConnected.size(); i++)
+        {
+            if(!visited[i]){
+                visited[i]=true;
+                queue<int> q;
+                q.push(i);
+                while(!q.empty()){
+                    int u=q.front();
+                    q.pop();
+
+                    for(int v=0; v<isConnected.size(); v++){
+                        if(isConnected[u][v]==1 && !visited[v]){
+                            visited[v]=true;
+                            q.push(v);
+                        }
+                    }
+                }
+                count++;
+            }
+        }
+        return count;
+    }
+};
+
 
 */
 
