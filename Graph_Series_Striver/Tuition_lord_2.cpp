@@ -4,35 +4,31 @@ using namespace std;
 // max-heap : priority_queue<int> pq;
 // min-heap : priority_queue<int, vector<int>, greater<int>> pq;
 
-// greater<pair<int, int>> →
-// This says:
-// When comparing two pairs, smaller comes first.
-// First compare by first, and if equal, compare by second.
-// list of (totalCost, node) pairs.
+// greater<tuple<int, int, vector<int>>> →
+// When comparing two tuples, compare by first element, then second, etc.
+// (totalCost, totalTime, path)
 
 class Solution {
 public:
     void findPath(int K, int n, vector<vector<int>>& edges, int S, int D) {
-        vector<pair<int, pair<int, int>>> adj[n + 1];
+        vector<tuple<int, int, int>> adj[n + 1];
         for (auto it : edges) {
             int u = it[0], v = it[1], t = it[2], c = it[3];
-            adj[u].push_back({v, {t, c}});
-            adj[v].push_back({u, {t, c}});
+            adj[u].push_back(make_tuple(v, t, c));
+            adj[v].push_back(make_tuple(u, t, c));
         }
 
-        priority_queue<pair<int, pair<int, vector<int>>>, 
-                       vector<pair<int, pair<int, vector<int>>>>, 
-                       greater<pair<int, pair<int, vector<int>>>>> pq;
+        priority_queue<tuple<int, int, vector<int>>, 
+                       vector<tuple<int, int, vector<int>>>, 
+                       greater<tuple<int, int, vector<int>>>> pq;
                        
         vector<int> minCost(n + 1, INT_MAX);
 
-        pq.push({0, {0, {S}}}); // {totalCost, {totalTime, path}}
+        pq.push(make_tuple(0, 0, vector<int>{S})); // {totalCost, totalTime, path}
         minCost[S] = 0;
 
         while (!pq.empty()) {
-            int totalCost = pq.top().first;
-            int totalTime = pq.top().second.first;
-            vector<int> path = pq.top().second.second;
+            auto [totalCost, totalTime, path] = pq.top();
             int u = path.back();
             pq.pop();
             
@@ -48,9 +44,7 @@ public:
             if (totalCost > minCost[u]) continue;
             
             for (auto it : adj[u]) {
-                int v = it.first;
-                int travelTime = it.second.first;
-                int travelCost = it.second.second;
+                auto [v, travelTime, travelCost] = it;
                 
                 int waitTime = (path.size() > 1) ? 1 : 0; // Wait only if not starting node
                 int newTime = totalTime + travelTime + waitTime;
@@ -61,7 +55,7 @@ public:
                     minCost[v] = newCost;
                     vector<int> newPath = path;
                     newPath.push_back(v);
-                    pq.push({newCost, {newTime, newPath}});
+                    pq.push(make_tuple(newCost, newTime, newPath));
                 }
             }
         }
