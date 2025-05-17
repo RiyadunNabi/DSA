@@ -16,16 +16,13 @@ void printMST(vector<int> &parent, vector<int> &key){
 
 int primMSTAdjList(int V, vector<vector<pair<int, int>>> &adj) {
     vector<bool> inMST(V, false);
-    vector<int> key(V, INT_MAX);       // Min edge weight to reach each vertex
-    vector<int> parent(V, -1);         // To store MST edges
-    //vector<vector<tuple<int,int,int>>> MST;
+    vector<int> key(V, INT_MAX);      
+    vector<int> parent(V, -1);         
 
     priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
-    //priority_queue<tuple<int,int,int>, vector<tuple<int,int,int>>, greater<tuple<int,int,int>>> pq;
 
     key[0] = 0;
     pq.push({0, 0}); // {weight, vertex}
-    // pq.push({0,0,-1});
     int totalWeight = 0;
 
     while (!pq.empty()) {
