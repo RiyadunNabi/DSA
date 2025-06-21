@@ -65,7 +65,7 @@ class SolutionBFS{
         }
         return bfsList;
     }
-}
+};
 
 class SolutionDFS{
     private:

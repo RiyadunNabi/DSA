@@ -18,7 +18,7 @@ void ListFromMatrix(int n,vector<vector<int>> &adjM){
     {
         for (int j = i+1; j<n; j++)
         {
-            if(adj[i][j]==1){
+            if(adjM[i][j]==1){
                 adjL[i+1].push_back(j+1);
                 adjL[j+1].push_back(i+1);
             }
