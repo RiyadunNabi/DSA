@@ -12,6 +12,21 @@ void ListFromMatrix(int n,vector<vector<int>> &adjM){
         }
     }
 
+    //or this one, will traverse only upper triangular matrix
+    vector<vector<int>> adjL(n+1);
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = i+1; j<n; j++)
+        {
+            if(adj[i][j]==1){
+                adjL[i+1].push_back(j+1);
+                adjL[j+1].push_back(i+1);
+            }
+        }  
+    }
+
+
+
     cout << "Adjacency List from Matrix:" << endl;
     for (int i = 1; i <= n; i++) {
         cout << i << ": ";
