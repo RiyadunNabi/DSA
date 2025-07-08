@@ -238,6 +238,79 @@ If you want to associate information with a key — like a phone number with a n
 ---
 ---
 ---
+Yes, you **can perform all tasks without explicitly using** `insert({k, v})`, by using the syntax `m[k] = v;` — **but only in certain contexts**, and it's important to understand how they differ:
+
+---
+
+### ✅ What does `m.insert({k, v})` do?
+
+* **Only inserts** the key-value pair if the key doesn't exist.
+* **Does not update** the value if key already exists.
+* Returns a flag indicating if the insert was successful.
+
+**Example:**
+
+```cpp
+map<string, int> m;
+m.insert({"apple", 10});  // Inserts
+m.insert({"apple", 20});  // Fails silently, does not update
+```
+
+---
+
+### ✅ What does `m[k] = v` do?
+
+* **Always sets** the value for key `k` to `v`.
+* If `k` **doesn’t exist**, it inserts it.
+* If `k` **does exist**, it **updates** the value.
+
+**Example:**
+
+```cpp
+map<string, int> m;
+m["apple"] = 10;  // Inserts
+m["apple"] = 20;  // Updates
+```
+
+---
+
+### 🔍 In your project context
+
+From the files, especially in `HashTable.h`, your own `insert()` function:
+
+```cpp
+void insert(string &key, int value)
+```
+
+Is customized to your hash table logic (handling collisions, strategies, etc.). If you **skip calling this function**, then things like:
+
+* Collision counting
+* Probing for open addressing
+* BST handling in chaining
+
+**won't happen correctly.**
+
+---
+
+### 🔴 So, should you avoid `insert()`?
+
+**No — in your hash table implementation (`HashTable` class), you must use the `insert()` function you wrote.** You **cannot replace** it with `m[k] = v;` because:
+
+* `m` is not a `map`, it’s a custom hash table.
+* Your `insert()` does more than just adding values — it ensures the logic of hash functions, probing, tree balancing, and collision handling works correctly.
+
+---
+
+### ✅ Summary:
+
+| Syntax            | Works in `std::map`? | Works in your custom `HashTable`? | Inserts new key     | Updates value          |
+| ----------------- | -------------------- | --------------------------------- | ------------------- | ---------------------- |
+| `m.insert({k,v})` | ✅ Yes                | ❌ No (unless implemented)         | ✅ Yes (only if new) | ❌ No                   |
+| `m[k] = v;`       | ✅ Yes                | ❌ No (unless you overload `[]`)   | ✅ Yes               | ✅ Yes                  |
+| `ht.insert(k, v)` | ❌ No                 | ✅ Yes (your logic)                | ✅ Yes               | ❌/✅ (depends on logic) |
+
+If you're using your own `HashTable` class, you must call its `insert()` method to ensure all behavior works correctly. Let me know if you'd like help adding `operator[]` to your custom class for more intuitive syntax.
+
 ---
 ---
 ---
@@ -292,4 +365,8 @@ So you can say:
 > "Only the **unordered\_**\* containers are examples of hashing-based data structures."
 
 Let me know if you want a quick diagram showing this visually!
+
+
+
+---
 
