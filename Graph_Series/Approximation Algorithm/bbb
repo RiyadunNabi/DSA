@@ -1,0 +1,91 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Item{
+    int id;
+    int weight;
+    int value;
+    int s_value;
+};
+
+void approxKnapsack(vector<Item> &items, int n, int c, float e, int max_value){
+    float k = (e * max_value) / n;
+
+    int max_svalue_sum = 0;
+    for(auto &i : items){
+        i.s_value = (int)(i.value / k);
+        max_svalue_sum += i.s_value;
+    }
+
+    vector<vector<int>> dp(n+1, vector<int>(max_svalue_sum+1, c+1));
+    dp[0][0] = 0;
+
+    for(int i = 0; i < n; i++){
+        Item itm = items[i];
+        for(int j = 0; j <= max_svalue_sum; j++){
+            dp[i+1][j] = dp[i][j];  // not take
+            if(j >= itm.s_value && dp[i][j - itm.s_value] + itm.weight <= c){
+                dp[i+1][j] = min(dp[i+1][j], dp[i][j - itm.s_value] + itm.weight);
+            }
+        }
+    }
+
+    int bestP = 0;
+    for(int p = max_svalue_sum; p >= 0; p--){
+        if(dp[n][p] <= c){
+            bestP = p;
+            break;
+        }
+    }
+
+    int fvalue = 0;
+    vector<int> result;
+    int currentP = bestP;
+
+    for(int i = n; i >= 1 && currentP > 0; i--){
+        Item itm = items[i-1];
+        if(dp[i][currentP] != dp[i-1][currentP]){
+            result.push_back(itm.id);
+            fvalue += itm.value;
+            currentP -= itm.s_value;
+        }
+    }
+
+    reverse(result.begin(), result.end());
+
+    cout << fvalue << endl;
+    for(int i : result){
+        cout << i << " ";
+    }
+    cout << endl;
+}
+
+int main(){
+    int n, c;
+    float e;
+    cin >> n >> c >> e;
+
+    vector<Item> items(n);
+    int max_value = 0;
+    for(int i = 0; i < n; i++){
+        items[i].id = i;
+        cin >> items[i].weight >> items[i].value;
+        max_value = max(max_value, items[i].value);
+    }
+
+    approxKnapsack(items, n, c, e, max_value);
+    cout << "end" << endl;
+}
+
+/*
+Sample Input:
+3 50 0.5
+10 60
+20 100
+30 120
+
+Expected Output:
+220
+1 2
+end
+*/
