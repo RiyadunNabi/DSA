@@ -1,0 +1,142 @@
+#include <iostream>
+#include <vector>
+#include <numeric>
+#include <algorithm>
+#include <cmath>
+
+// Use the standard namespace as requested.
+using namespace std;
+
+/**
+ * @brief Represents an item with its properties for the knapsack problem.
+ */
+struct Item {
+    int id;           // 1-based identifier for the item
+    long long weight; // Weight of the item
+    long long value;  // Original value of the item
+    int scaled_value; // Value after scaling for the FPTAS algorithm
+};
+
+/**
+ * @brief Implements the FPTAS for the 0-1 Knapsack problem and prints the result.
+ */
+void solve() {
+    // ## 1. Input Processing
+    int n;
+    long long W;
+    double epsilon;
+    cin >> n >> W >> epsilon;
+
+    vector<Item> items(n);
+    long long v_max = 0;
+    for (int i = 0; i < n; ++i) {
+        items[i].id = i + 1;
+        cin >> items[i].weight >> items[i].value;
+        if (items[i].value > v_max) {
+            v_max = items[i].value;
+        }
+    }
+
+    // Edge case: If all item values are zero, the total value is zero.
+    if (v_max == 0) {
+        cout << 0 << endl;
+        cout << endl; // Print an empty line for the tour/items.
+        return;
+    }
+
+    // ## 2. Value Scaling
+    // Calculate the scaling factor K. This factor is key to the FPTAS, ensuring
+    // the runtime is polynomial in n and 1/epsilon.
+    double K = (epsilon * v_max) / n;
+    
+    // A valid FPTAS assumes epsilon > 0 and n > 0. If v_max > 0, then K > 0.
+    // Scale down the value of each item and calculate the maximum possible scaled value sum.
+    int max_scaled_value_sum = 0;
+    for (auto& item : items) {
+        if (K > 0) {
+            item.scaled_value = floor(item.value / K);
+        } else {
+            // This case should not be reached with valid FPTAS parameters.
+            item.scaled_value = 0; 
+        }
+        max_scaled_value_sum += item.scaled_value;
+    }
+
+    // ## 3. Dynamic Programming
+    // Use DP to find the minimum weight for each possible sum of scaled values.
+    // dp[i][p] = minimum weight to achieve scaled value `p` using the first `i` items.
+    // Initialize weights to a value larger than the knapsack capacity (`W + 1`) to represent infinity.
+    vector<vector<long long>> dp(n + 1, vector<long long>(max_scaled_value_sum + 1, W + 1));
+
+    // Base case: A value of 0 is achieved with 0 weight.
+    dp[0][0] = 0;
+
+    for (int i = 1; i <= n; ++i) {
+        const auto& item = items[i - 1]; // Current item (items vector is 0-indexed)
+        for (int p = 0; p <= max_scaled_value_sum; ++p) {
+            // Option 1: Don't take the current item.
+            // The minimum weight is the same as the solution with i-1 items for profit p.
+            dp[i][p] = dp[i - 1][p];
+
+            // Option 2: Take the current item (if possible).
+            if (p >= item.scaled_value) {
+                // Check if the previous state (before adding the current item) was reachable.
+                if (dp[i - 1][p - item.scaled_value] <= W) {
+                     long long weight_with_item = dp[i-1][p - item.scaled_value] + item.weight;
+                     // Only update if the new total weight is an improvement and within capacity.
+                     dp[i][p] = min(dp[i][p], weight_with_item);
+                }
+            }
+        }
+    }
+
+    // ## 4. Find Best Approximate Solution
+    // Find the largest scaled value `p` whose corresponding minimum weight is within capacity `W`.
+    int best_p = 0;
+    for (int p = max_scaled_value_sum; p >= 0; --p) {
+        if (dp[n][p] <= W) {
+            best_p = p;
+            break;
+        }
+    }
+
+    // ## 5. Backtrack to Reconstruct Solution
+    // Trace back through the DP table to find which items were included in the solution.
+    long long final_value = 0;
+    vector<int> solution_items;
+    int current_p = best_p;
+
+    for (int i = n; i > 0 && current_p > 0; --i) {
+        const auto& item = items[i - 1];
+        
+        // If the weight at dp[i][current_p] is different from dp[i-1][current_p],
+        // it means item `i` must have been taken to achieve this optimal weight for this scaled profit.
+        if (dp[i][current_p] != dp[i-1][current_p]) {
+            solution_items.push_back(item.id);
+            final_value += item.value;
+            current_p -= item.scaled_value;
+        }
+    }
+    // The items were added in reverse order, so we reverse the list to get the correct order.
+    reverse(solution_items.begin(), solution_items.end());
+
+    // ## 6. Output
+    // Print the total original value of the selected items.
+    cout << final_value << endl;
+    // Print the IDs of the selected items, space-separated.
+    for (size_t i = 0; i < solution_items.size(); ++i) {
+        cout << solution_items[i] << (i == solution_items.size() - 1 ? "" : " ");
+    }
+    cout << endl;
+}
+
+/**
+ * @brief Main function to run the program.
+ */
+int main() {
+    // Use fast I/O
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    solve();
+    return 0;
+}
